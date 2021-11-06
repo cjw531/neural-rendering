@@ -14,7 +14,7 @@ def hologram_preprocessing(impath, save_path):
 
     dir_list = os.listdir(impath)
     for i in dir_list:
-        if i.endswith(".png"):
+        if i.endswith("jpg") or i.endswith("png"):
             image = cv2.imread(impath + i)
             circles = detect_circles(image)
             if circles is None: continue # no circle detected
@@ -70,6 +70,19 @@ def crop_boundary(image, circlesRound):
     output = output[upper_left_y : lower_right_y + 1, upper_left_x : lower_right_x + 1]
     return output
 
+def rotate_preprocessing(impath, save_path):
+    path = Path(save_path)
+    path.mkdir(parents=True, exist_ok=True)
+    if not(impath.endswith("/")): impath += "/"
+    if not(save_path.endswith("/")): save_path += "/"
+
+    dir_list = os.listdir(impath)
+    for i in dir_list:
+        if i.endswith("jpg") or i.endswith("png"):
+            image = cv2.imread(impath + i)
+            rotated = rotate_img(image)
+            cv2.imwrite(save_path + i, rotated)
+
 def rotate_img(image):
     output = image.copy()
     # rotate 270 by rotating 90 by 3 times
@@ -79,7 +92,11 @@ def rotate_img(image):
     return rotated
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print("Usage:\n\t python hologram_preprocessing.py <imread_path> <imsave_path>")
-    else:
+    if len(sys.argv) == 3:
         hologram_preprocessing(sys.argv[1], sys.argv[2])
+    elif len(sys.argv) == 4: # rotate only
+        if (sys.argv[3] != '--rotate_flag'): # err case
+            print("Usage:\n\t python hologram_preprocessing.py <imread_path> <imsave_path> --rotate_flag")
+        rotate_preprocessing(sys.argv[1], sys.argv[2])
+    else:
+        print("Usage:\n\t python hologram_preprocessing.py <imread_path> <imsave_path> --rotate_flag")
