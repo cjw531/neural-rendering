@@ -4,6 +4,9 @@ import numpy as np
 import os
 import sys
 from pathlib import Path
+from PIL import Image
+from numpy.lib.function_base import quantile
+from tqdm import tqdm
 
 def hologram_preprocessing(impath, save_path):
     # path creation reference: https://stackoverflow.com/a/41146954
@@ -13,7 +16,7 @@ def hologram_preprocessing(impath, save_path):
     if not(save_path.endswith("/")): save_path += "/"
 
     dir_list = os.listdir(impath)
-    for i in dir_list:
+    for i in tqdm(dir_list):
         if i.endswith("jpg") or i.endswith("png"):
             image = cv2.imread(impath + i)
             circles = detect_circles(image)
@@ -77,7 +80,7 @@ def rotate_preprocessing(impath, save_path):
     if not(save_path.endswith("/")): save_path += "/"
 
     dir_list = os.listdir(impath)
-    for i in dir_list:
+    for i in tqdm(dir_list):
         if i.endswith("jpg") or i.endswith("png"):
             image = cv2.imread(impath + i)
             rotated = rotate_img(image)
@@ -91,12 +94,31 @@ def rotate_img(image):
     rotated = np.rot90(rotated)
     return rotated
 
+def tif_to_png(impath, save_path):
+    path = Path(save_path)
+    path.mkdir(parents=True, exist_ok=True)
+    if not(impath.endswith("/")): impath += "/"
+    if not(save_path.endswith("/")): save_path += "/"
+
+    dir_list = os.listdir(impath)
+    for i in tqdm(dir_list):
+        if i.endswith("tif"):
+            image = Image.open(impath + i)
+            out = image.convert("RGB")
+            out.save(save_path + i[:-3] + "png", quality=100)
+
 if __name__ == '__main__':
-    if len(sys.argv) == 3:
+    if len(sys.argv) == 3: # general preprocessing
         hologram_preprocessing(sys.argv[1], sys.argv[2])
-    elif len(sys.argv) == 4: # rotate only
-        if (sys.argv[3] != '--rotate_flag'): # err case
-            print("Usage:\n\t python hologram_preprocessing.py <imread_path> <imsave_path> --rotate_flag")
-        rotate_preprocessing(sys.argv[1], sys.argv[2])
+    elif len(sys.argv) == 4: # rotate or tif conversion only
+        if (sys.argv[3] == '--rotate_flag'): rotate_preprocessing(sys.argv[1], sys.argv[2])
+        elif (sys.argv[3] == '--tif_to_png'): tif_to_png(sys.argv[1], sys.argv[2])
+        else: 
+            print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --rotate_flag")
+            print("OR")
+            print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --tif_to_png")
     else:
-        print("Usage:\n\t python hologram_preprocessing.py <imread_path> <imsave_path> --rotate_flag")
+        print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --rotate_flag")
+        print("OR")
+        print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --tif_to_png")
+        print("Note that flags with -- tags are optional")
