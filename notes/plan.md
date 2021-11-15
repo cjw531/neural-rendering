@@ -1,20 +1,21 @@
-# Weekly Plan
-## 1. 10/25 - 10/31
-- [x] Obtain other available train dataset & additional info
-- [x] Render train dataset (...done with NeRFMM)
-- [x] Research quantitative measurement metrics
-- [ ] Thesis doc --limitations of NeRF due to COLMAP dependency, how dataset was obtained, intro part of holography and NeRF, and experiment hardware specifications, and etc., but not experiment/result/conclusion part 
+# Remaining Plan
+## 11/15 - 11/21
+- [ ] Capture dataset with mobile phone: (1) object; and (2) holography img
+- [ ] Apply calculations (PSNR, SSIM, LPIPS)
+- [ ] Obtain the estimated COLMAP trajectory
+- [ ] Run NeRF with estimated trajectory + cropped dataset
+- [ ] Apply calculations (PSNR, SSIM, LPIPS)
 
-## 2. 11/1 - 11/7
-- [ ] Get a rendering result at a fixed camera viewpoint
-- [ ] More on literature review
-- [ ] Thesis doc --limitations of NeRF due to COLMAP dependency, how dataset was obtained, intro part of holography and NeRF, and experiment hardware specifications, and etc., but not experiment/result/conclusion part (cont'd from previous week)
-
-## 3. 11/8 - 11/14
-- [ ] Apply quantitative measurements
-- [ ] More on literature review
-- [ ] Thesis doc --include experiment/result/conclusion based on the quantitative measures
-
-## 4. 11/15 - 11/22
-- [ ] Wrap up thesis doc
+## 11/22 - 11/28
+- [ ] Cont'd & wrap up experiment & calculations
+- [ ] Work on thesis doc
 - [ ] Prepare for a talk
+
+## 11/29 -
+- [ ] Defense talk
+
+*Note: deadline is Dec 3rd
+
+## Misc.
+Thesis title?
+- Quantitative Measures of Holography Interpolaton With NeRF
