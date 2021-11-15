@@ -19,3 +19,4 @@
 ## Misc.
 Thesis title?
 - Quantitative Measures of Holography Interpolaton With NeRF
+- Quantitative Analysis on Holography Interpolation With NeRF
