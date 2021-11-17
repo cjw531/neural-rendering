@@ -107,18 +107,41 @@ def tif_to_png(impath, save_path):
             out = image.convert("RGB")
             out.save(save_path + i[:-3] + "png", quality=100)
 
+''' hardcoded crop for polaroid dataset '''
+def polaroid_crop(impath, save_path):
+    path = Path(save_path)
+    path.mkdir(parents=True, exist_ok=True)
+    if not(impath.endswith("/")): impath += "/"
+    if not(save_path.endswith("/")): save_path += "/"
+
+    dir_list = os.listdir(impath)
+    for i in tqdm(dir_list):
+        if i.endswith("jpg") or i.endswith("png"):
+            image = cv2.imread(impath + i)
+            w = 2500
+            h = 2500
+            x = (image.shape[1]//2) - (w//2)
+            y = (image.shape[0]//2) - (h//2)
+            crop_img = image[y : y+h, x : x+w]
+            cv2.imwrite(save_path + i, crop_img)
+
 if __name__ == '__main__':
     if len(sys.argv) == 3: # general preprocessing
         hologram_preprocessing(sys.argv[1], sys.argv[2])
     elif len(sys.argv) == 4: # rotate or tif conversion only
         if (sys.argv[3] == '--rotate_flag'): rotate_preprocessing(sys.argv[1], sys.argv[2])
         elif (sys.argv[3] == '--tif_to_png'): tif_to_png(sys.argv[1], sys.argv[2])
+        elif (sys.argv[3] == '--polaroid_crop'): polaroid_crop(sys.argv[1], sys.argv[2])
         else: 
             print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --rotate_flag")
             print("OR")
             print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --tif_to_png")
+            print("OR")
+            print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --polaroid_crop")
     else:
         print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --rotate_flag")
         print("OR")
         print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --tif_to_png")
+        print("OR")
+        print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --polaroid_crop")
         print("Note that flags with -- tags are optional")
