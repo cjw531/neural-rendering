@@ -1,10 +1,12 @@
 import numpy as np
 import math
 import cv2
+import math
 import lpips
 import torch
 from PIL import Image
 import torchvision.transforms.functional as TF
+from numba import jit
 
 
 def mse(img1, img2):
@@ -66,5 +68,45 @@ def calculate_ssim(img1, img2):
     else:
         raise ValueError('Wrong input image dimensions.')
 
+@jit
+def pixel_brightness(pixel):
+    '''
+    brightness = sqrt(0.299 * R^2 + 0.587 * G^2 + 0.114 * B^2)
+    Input: each pixel from image
+    Output: computation result indicated above
+    '''
+    assert 3 == len(pixel)
+    r, g, b = pixel
+    return math.sqrt(0.299 * r ** 2 + 0.587 * g ** 2 + 0.114 * b ** 2)
 
+@jit
+def image_brightness(img):
+    '''
+    Calculates brightness, return the brightness value per single image
+    Input: single image read with opencv2
+    Output: calculated brightness value
+    '''
+    nr_of_pixels = len(img) * len(img[0])
+
+    sum_brightness = 0
+    for row in img:
+        for pixel in row:
+            sum_brightness += pixel_brightness(pixel)
+
+    return sum_brightness / nr_of_pixels
+
+@jit
+def sqrt_transform(img):
+    '''
+    Apply square root transform to the given image
+    Input: single image read with opencv2
+    Output: sqrt transform applied image
+    '''
+    h = img.shape[0]
+    w = img.shape[1]
+    for y in range(0, h):
+        for x in range(0, w):
+            img[y, x] = np.sqrt(img[y, x])
     
+    sqrt_img = cv2.normalize(img, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
+    return sqrt_img
