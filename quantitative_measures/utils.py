@@ -110,3 +110,18 @@ def sqrt_transform(img):
     
     sqrt_img = cv2.normalize(img, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
     return sqrt_img
+
+def clahe_transform(img):
+    '''
+    Apply CLAHE pixel histogram equalization to the given image
+    CLAHE reference: https://stackoverflow.com/a/47370615
+    Input: single image read with opencv2
+    Output: CLAHE applied image
+    '''
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+    lab_planes = cv2.split(lab)
+    clahe = cv2.createCLAHE(clipLimit=2.0)
+    lab_planes[0] = clahe.apply(lab_planes[0])
+    lab = cv2.merge(lab_planes)
+    bgr = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
+    return bgr
