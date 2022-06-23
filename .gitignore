@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # save dir
-.quantitative_measures/save
+/quantitative_measures/save
