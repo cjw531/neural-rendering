@@ -125,6 +125,19 @@ def polaroid_crop(impath, save_path):
             crop_img = image[y : y+h, x : x+w]
             cv2.imwrite(save_path + i, crop_img)
 
+def spiderman_crop(impath, save_path):
+    path = Path(save_path)
+    path.mkdir(parents=True, exist_ok=True)
+    if not(impath.endswith("/")): impath += "/"
+    if not(save_path.endswith("/")): save_path += "/"
+
+    dir_list = os.listdir(impath)
+    for i in tqdm(dir_list):
+        if i.endswith("jpg") or i.endswith("png"):
+            image = cv2.imread(impath + i)
+            crop_img = image[1060 : 1950 + 1, 1240 : 1810 + 1]
+            cv2.imwrite(save_path + i, crop_img)
+
 if __name__ == '__main__':
     if len(sys.argv) == 3: # general preprocessing
         hologram_preprocessing(sys.argv[1], sys.argv[2])
@@ -132,16 +145,21 @@ if __name__ == '__main__':
         if (sys.argv[3] == '--rotate_flag'): rotate_preprocessing(sys.argv[1], sys.argv[2])
         elif (sys.argv[3] == '--tif_to_png'): tif_to_png(sys.argv[1], sys.argv[2])
         elif (sys.argv[3] == '--polaroid_crop'): polaroid_crop(sys.argv[1], sys.argv[2])
+        elif (sys.argv[3] == '--spiderman_crop'): spiderman_crop(sys.argv[1], sys.argv[2])
         else: 
             print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --rotate_flag")
             print("OR")
             print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --tif_to_png")
             print("OR")
             print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --polaroid_crop")
+            print("OR")
+            print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --spiderman_crop")
     else:
         print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --rotate_flag")
         print("OR")
         print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --tif_to_png")
         print("OR")
         print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --polaroid_crop")
+        print("OR")
+        print("Usage: python hologram_preprocessing.py <imread_path> <imsave_path> --spiderman_crop")
         print("Note that flags with -- tags are optional")
